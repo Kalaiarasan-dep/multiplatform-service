@@ -1,0 +1,18 @@
+package in.hashconnect.gmb.vo;
+
+public enum Categories {
+	CATEGORY_UNSPECIFIED,
+	COVER,
+	PROFILE,
+	LOGO,
+	EXTERIOR,
+	INTERIOR,
+	PRODUCT,
+	AT_WORK,
+	FOOD_AND_DRINK,
+	MENU,
+	COMMON_AREA,
+	ROOMS,
+	TEAMS,
+	ADDITIONAL
+}

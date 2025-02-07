@@ -1,0 +1,7 @@
+package in.hashconnect.gmb.vo;
+
+public enum MetricOption {
+	METRIC_OPTION_UNSPECIFIED,
+	AGGREGATED_TOTAL,AGGREGATED_DAILY,
+	BREAKDOWN_DAY_OF_WEEK,BREAKDOWN_HOUR_OF_DAY
+}
