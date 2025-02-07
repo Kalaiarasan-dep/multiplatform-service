@@ -1,0 +1,18 @@
+{
+  "select": {
+    "default_PARTNER": {
+      "query": "SELECT  s.id, s.name FROM status s WHERE  (s.type = 'ORDER' OR s.type = 'INVOICE_REQUEST') AND s.id != (select id from status where name='Reference ID does not exists' and type='ORDER') ",
+      "mandatoryFields": [
+        "userid"
+      ]
+      },
+    "default_SUPER_ADMIN": {
+      "query": "SELECT s.id, s.name FROM status s WHERE (s.type = 'ORDER' OR s.type = 'INVOICE_REQUEST') ",
+      "mandatoryFields": [
+        "userid"
+      ]
+    },
+
+    "suportRoleBasedQueries": true
+  }
+}

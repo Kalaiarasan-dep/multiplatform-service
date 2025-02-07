@@ -1,0 +1,11 @@
+{
+  "select": {
+    "byInvoiceid": {
+      "query": "select ir.id as 'invoice_request_no', SUBSTRING_INDEX(invoice_scan_uri, '\\\\', -1) as invoice_scan_uri, i.invoice_number , date_format(i.invoice_date,'%d-%m-%Y') as 'invoice_date', ROUND(i.invoice_submitted_amount,2) as invoice_submitted_amount,i.igst_rate,i.cgst_rate,i.sgst_rate ,p.registered_business_name, i.content_type,case WHEN LOWER(i.content_type) LIKE '%pdf%' THEN 'true' ELSE 'false' END AS isPdf from invoice i left join invoice_request ir on i.partner_invoice_request_id=ir.id left join partner p on p.id=ir.partner_id where ir.id=:invoiceId",
+      "mandatoryFields": [
+        "invoiceId"
+      ]
+
+    }
+  }
+}

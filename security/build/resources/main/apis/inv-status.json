@@ -1,0 +1,14 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "SELECT  s.id, s.name FROM status s ",
+      "allowedParams": {
+        "idIn": "s.id",
+        "type": "s.type"
+      }
+    }
+  }
+}
+
+

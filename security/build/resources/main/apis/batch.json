@@ -1,0 +1,11 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "select ub.id, concat(\"Batch \",batch_number) as name  from upload_batch ub left join program p on p.name=ub.program ",
+      "allowedParams": {
+        "programIn": " p.name"
+      }
+    }
+  }
+}

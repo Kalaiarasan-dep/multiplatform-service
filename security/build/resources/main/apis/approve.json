@@ -1,0 +1,8 @@
+{
+  "update": {
+    "query": "update `order` set status_id=(select id from status where name='Approved' and type='ORDER') where id in (:ids) ",
+    "mandatoryFields": [
+      "ids"
+    ]
+  }
+}

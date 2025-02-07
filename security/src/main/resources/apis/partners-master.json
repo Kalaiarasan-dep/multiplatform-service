@@ -1,0 +1,19 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "SELECT \n    p.id AS partner_Id,\n    upr.role_id,\n    CONCAT((SELECT value FROM settings WHERE name = 'signUp_validation_url'), u.id, '&') AS url,\n    (\n        SELECT GROUP_CONCAT(JSON_UNQUOTE(JSON_EXTRACT(reason, '$.name')) SEPARATOR ', ')\n        FROM (\n            SELECT validation_resp->'$.reasons' AS reasons\n            FROM signUp_validation\n            WHERE user_id = u.id AND p.status_id = status_id\n            ORDER BY id DESC\n            LIMIT 1\n        ) AS top_validation\n        JOIN JSON_TABLE(top_validation.reasons, '$[*]' COLUMNS (reason JSON PATH '$')) AS reasons_table\n    ) AS remarks,\n    p.status_id AS partner_status_id,\n    registered_business_name AS partnername,\n    CASE \n        WHEN upr.role_id = 2 THEN phu.user_id\n        ELSE phu.user_id  \n    END AS user_id,\n    p.registered_business_name,\n    contract_id,\n    merchant_id,\n    gst_number,\n    owner_email AS email,\n    CONCAT(IFNULL(address_line_1, '-'), ' ', IFNULL(address_line_2, '-')) AS address,\n    c.name AS city,\n    s.name AS state,\n    st.name AS partner_status,\n    CASE \n        WHEN upr.role_id = 2 THEN u.status_id\n        ELSE u.status_id \n    END AS user_status\n\nFROM \n    partner p \nLEFT JOIN \n    partner_has_user phu ON phu.partner_id = p.id\nLEFT JOIN \n    user_performs_role upr ON upr.user_id = phu.user_id \nLEFT JOIN \n    user u ON u.id = phu.user_id    \nLEFT JOIN \n    city c ON c.id = p.city_id \nLEFT JOIN \n    state s ON c.state_id = s.id\nLEFT JOIN \n    status st ON st.id = p.status_id ",
+      "groupBy":"p.id , u.id HAVING \n    (SUM(CASE WHEN upr.role_id = 2 THEN 1 ELSE 0 END) > 0) \n    OR \n    (COUNT(upr.user_id) = 0) ",
+      "orderBy": "p.create_dt desc",
+      "allowedParams": {
+        "statusIn": "p.status_id",
+        "enDtLsEq": "p.create_dt",
+        "stDtGrEq": "p.create_dt",
+        "cityIn": "p.city_id",
+        "stateIn": "p.state_id",
+        "partnerIn": "p.id "
+      },
+      "postProcessor": "partnersMasterPostProcessor"
+    }
+  }
+}

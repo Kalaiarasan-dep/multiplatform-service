@@ -1,0 +1,11 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "select u.id as user_id,  p.id, registered_business_name,owner_name,owner_email,owner_mobile,finance_head_name,finance_head_mobile,contract_id, store_type_id,business_type_id,state_id,city_id,gst_type_id2 ,pb.bank_id,pb.account_type_id,address_line_1,address_line_2,pincode,pan_number,gst_number,pb.branch_name,pb.account_number,\npb.ifsc_code,pb.beneficiary_name,p.upi_id , SUBSTRING(pancard_url, LOCATE('id-proof-', pancard_url) + LENGTH('id-proof-')) AS pancard_url,\nSUBSTRING(gst_url, LOCATE('id-proof-', gst_url) + LENGTH('id-proof-')) AS gst_url,\nSUBSTRING(cancelled_cheque_url, LOCATE('id-proof-', cancelled_cheque_url) + LENGTH('id-proof-')) AS cancelled_cheque_url ,pancard_url as pancardPath,cancelled_cheque_url as chequePath,gst_url as gstPath from partner p left join partner_bank_account pb on pb.partner_id=p.id left join partner_has_user ph on ph.partner_id =p.id\nleft join user u on u.id=ph.user_id where p.gst_number=:gstNo",
+      "mandatoryFields": [
+        "gstNo"
+      ]
+    }
+  }
+}

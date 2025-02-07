@@ -1,0 +1,8 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "select id,name from gst_type"
+    }
+  }
+}

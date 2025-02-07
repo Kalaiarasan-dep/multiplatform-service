@@ -1,0 +1,9 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "WITH FilteredPartners AS (\n    SELECT \n        p.id,\n        p.status_id,\n        upr.role_id\n    FROM \n        partner p\n    LEFT JOIN \n        partner_has_user phu ON phu.partner_id = p.id\n    LEFT JOIN \n        user_performs_role upr ON upr.user_id = phu.user_id \n    GROUP BY \n        p.id\n    HAVING \n        (SUM(CASE WHEN upr.role_id = 2 THEN 1 ELSE 0 END) > 0)  -- At least one user with role 2\n        OR \n        (COUNT(upr.user_id) = 0) -- Or no users at all\n)\n\nSELECT  \n    JSON_OBJECT(\n        'overall_Partners', COUNT(*),  \n        'completed_Sign_Up', SUM(CASE WHEN status_id IN (16, 18, 19, 20, 21, 23) THEN 1 ELSE 0 END),\n        'profile_Incomplete', SUM(CASE WHEN status_id = 22 THEN 1 ELSE 0 END),\n        'validation_Pending', SUM(CASE WHEN status_id = 16 THEN 1 ELSE 0 END),\n        'approved_Partners', SUM(CASE WHEN status_id = 18 THEN 1 ELSE 0 END),\n        'in_Eligible_Partners', SUM(CASE WHEN status_id IN (19, 20, 21, 23) THEN 1 ELSE 0 END)\n    ) AS data\nFROM \n    FilteredPartners  ",
+      "postProcessor": "dashboardPostProcessor"
+    }
+  }
+}

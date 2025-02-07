@@ -1,0 +1,12 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "SELECT   program_name AS Program,ub.month as Month, ord.order_id as 'Order Id', claimed_amount AS Cost FROM `order` ord LEFT JOIN bulk_upload_file bu ON bu.id = ord.bulk_upload_file_id LEFT JOIN partner p ON p.id = ord.partner_id LEFT JOIN upload_batch ub ON ub.id = bu.upload_batch_id LEFT JOIN invoice_request ir on ir.id=ord.invoice_request_id ",
+      "countQuery": "select count(*) FROM `order` ord LEFT JOIN bulk_upload_file bu ON bu.id = ord.bulk_upload_file_id LEFT JOIN partner p ON p.id = ord.partner_id LEFT JOIN upload_batch ub ON ub.id = bu.upload_batch_id LEFT JOIN invoice_request ir on ir.id=ord.invoice_request_id ",
+      "allowedParams": {
+        "id":"ir.id"
+      }
+    }
+  }
+}

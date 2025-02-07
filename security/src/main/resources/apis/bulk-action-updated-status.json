@@ -1,0 +1,14 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "SELECT actions as updatedStatus FROM status where id=:statusId",
+      "mandatoryFields": [
+        "statusId"
+      ],
+      "postProcessor": "bulkActionUpdatedStatusPostProcessor"
+    }
+  }
+}
+
+

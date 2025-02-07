@@ -1,0 +1,11 @@
+{
+  "select": {
+    "useDefaultAlways": true,
+    "default": {
+      "query": "SELECT COUNT(DISTINCT partner_id) partnerCount,COUNT(id) orderCount, SUM(claimed_amount) totalAmount FROM `order` ",
+      "allowedParams": {
+        "idIn": "id"
+      }
+    }
+  }
+}

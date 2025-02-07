@@ -1,0 +1,8 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "select value as data from settings where name='faqs'"
+    }
+  }
+}

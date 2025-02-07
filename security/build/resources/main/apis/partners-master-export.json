@@ -1,0 +1,18 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "select distinct p.id partner_id, phu.user_id,contract_id,merchant_id,registered_business_name,\naddress_line_1, address_line_2, pincode, gst_number, pan_number, is_msme, udyam_number, \nzoho_vendor_id, upi_id, owner_mobile, owner_name, owner_email, finance_head_name, \nfinance_head_email, partner_agreement_signed, gst_type_id2, mdm_id, finance_head_mobile, concat((select value from settings where name = 'signupImagePath'),'gst&id=',p.id) as gst_url,concat((select value from settings where name = 'signupImagePath'),'pan&id=',p.id) as pancard_url,\nconcat((select value from settings where name = 'signupImagePath'),'cheque&id=',p.id) as cancelled_cheque_url, fetch_bill, last_fetch_bill_dt, is_registered,\ninv_submitted, inv_paid, pending_payments, tat, amt_submit, amt_paid, amt_pending,\naccount_number,ifsc_code,beneficiary_name,branch_name,c.name partner_city,st.name partner_state,\ns.name partner_status,s2.name user_status,str.name store_type,bu.name business_type,gt.name gst_type,b.name bank,\nact.name account_type\nfrom partner p left join partner_bank_account pba on pba.partner_id=p.id \n  left join partner_has_user phu on phu.partner_id=p.id\nLEFT JOIN \n    user_performs_role upr ON upr.user_id = phu.user_id \n  \nleft join user u on u.id=phu.user_id\nleft join city c on c.id=p.city_id \nleft join state st on st.id=c.state_id\nleft join status s on s.id=p.status_id\nleft join status s2 on s2.id=u.status_id\nleft join store_type str on str.id=p.store_type_id\nleft join business_type bu on bu.id=p.business_type_id\nleft join gst_type gt on gt.id=p.gst_type_id2\nleft join bank b on b.id=pba.bank_id\nleft join account_type act on act.id=pba.account_type_id  ",
+      "groupBy":"p.id , u.id HAVING \n    (SUM(CASE WHEN upr.role_id = 2 THEN 1 ELSE 0 END) > 0) \n    OR \n    (COUNT(upr.user_id) = 0) ",
+      "orderBy": "p.id desc",
+      "allowedParams": {
+        "statusIn": "p.status_id",
+        "enDtLsEq": "p.create_dt",
+        "stDtGrEq": "p.create_dt",
+        "cityIn": "p.city_id",
+        "stateIn": "p.state_id",
+        "partnerIn": "p.id "
+      }
+    }
+  }
+}

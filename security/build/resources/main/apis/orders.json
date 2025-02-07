@@ -1,0 +1,57 @@
+{
+  "select": {
+    "preProcessor": "ordersPostProcessor",
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "SELECT ord.id,ub.month,CONCAT(pr.code, '-', ord.id)  hcTicketID, ord.invoice_request_id AS requestId, s.name AS status,pr.name AS program, CONCAT('Batch ', ub.batch_number) AS batch,ord.order_id  orderId,DATE_FORMAT(order_date, '%d-%m-%Y')  orderDate, COALESCE(p.registered_business_name, ord.partner_name)  partnerName,ord.contract_id  contractId, ord.merchant_id  merchantId,claimed_amount  cost,DATE_FORMAT(ord.created_dt, '%d-%m-%Y') uploadedDate, re.reasons  remarks FROM `order` ord  LEFT JOIN bulk_upload_file bu ON bu.id = ord.bulk_upload_file_id LEFT JOIN partner p ON p.id = ord.partner_id LEFT JOIN status s ON s.id = ord.status_id LEFT JOIN upload_batch ub ON ub.id = bu.upload_batch_id  LEFT JOIN program pr ON ord.program_id=pr.id  LEFT JOIN ( SELECT orm.order_id, GROUP_CONCAT(re.reasons) AS reasons FROM order_reasons_mapping orm LEFT JOIN reasons re ON re.id = orm.reason_id GROUP BY orm.order_id ) re ON re.order_id = ord.id  and ord.status_id  in (5,6) ",
+      "orderBy": "ord.id desc",
+      "countQuery": "SELECT count(*) FROM `order` ord left join bulk_upload_file bu on bu.id=ord.bulk_upload_file_id  LEFT JOIN program pr ON ord.program_id=pr.id  left join partner p on p.id=ord.partner_id  left join status s on s.id=ord.status_id left join upload_batch ub on ub.id=bu.upload_batch_id  ",
+      "allowedParams": {
+        "statusIn": "ord.status_id",
+        "programIn":"ord.program_id",
+        "enDtLsEq": "ord.order_date",
+        "stDtGrEq": "ord.order_date",
+        "userid": "bu.user_id",
+        "partnerIn": "ord.partner_id",
+        "batchIn": "bu.upload_batch_id ",
+        "monthIn": "ub.month"
+      },
+      "postProcessor": "ordersPostProcessor"
+    },
+    "default_PARTNER": {
+      "query": "select ord.id,ub.month,CONCAT(pr.code, '-', ord.id) hcTicketID,ord.invoice_request_id  requestId, re.reasons  remarks,s.name status, pr.name as program,concat(\"Batch \",ub.batch_number) as batch, ord.order_id orderId, date_Format(order_date,'%d-%m-%Y')  orderDate,COALESCE(p.registered_business_name, ord.partner_name) partnerName,ord.contract_id contractId, ord.merchant_id merchantId,claimed_amount as cost,date_Format(ord.created_dt,'%d-%m-%Y') as uploadedDate from `order` ord left join bulk_upload_file bu on bu.id=ord.bulk_upload_file_id left join partner p on p.id=ord.partner_id  left join status s on s.id=ord.status_id left join upload_batch ub on ub.id=bu.upload_batch_id  LEFT JOIN program pr ON ord.program_id=pr.id   left join partner_has_user phu on phu.partner_id=ord.partner_id  LEFT JOIN ( SELECT orm.order_id, GROUP_CONCAT(re.reasons) AS reasons FROM order_reasons_mapping orm LEFT JOIN reasons re ON re.id = orm.reason_id GROUP BY orm.order_id ) re ON re.order_id = ord.id  and ord.status_id  in (5,6) ",
+      "orderBy": "ord.id desc",
+      "countQuery": "SELECT count(*) FROM `order` ord left join bulk_upload_file bu on bu.id=ord.bulk_upload_file_id  LEFT JOIN program pr ON ord.program_id=pr.id  left join partner p on p.id=ord.partner_id  left join status s on s.id=ord.status_id left join upload_batch ub on ub.id=bu.upload_batch_id left join partner_has_user phu on phu.partner_id=ord.partner_id ",
+      "allowedParams": {
+        "statusIn": "ord.status_id",
+        "programIn":"ord.program_id",
+        "enDtLsEq": "ord.order_date",
+        "stDtGrEq": "ord.order_date",
+        "userid": "phu.user_id",
+        "partnerIn": "ord.partner_id",
+        "batchIn": "bu.upload_batch_id ",
+        "monthIn": "ub.month"
+      },
+      "postProcessor": "ordersPostProcessor"
+    },
+    "default_SUPER_ADMIN": {
+
+      "query": "SELECT ord.id,ub.month,CONCAT(pr.code, '-', ord.id)  hcTicketID, ord.invoice_request_id AS requestId, s.name AS status,pr.name AS program, CONCAT('Batch ', ub.batch_number) AS batch,ord.order_id  orderId,DATE_FORMAT(order_date, '%d-%m-%Y')  orderDate, COALESCE(p.registered_business_name, ord.partner_name)  partnerName,ord.contract_id  contractId, ord.merchant_id  merchantId,claimed_amount  cost,DATE_FORMAT(ord.created_dt, '%d-%m-%Y') uploadedDate, re.reasons  remarks FROM `order` ord  LEFT JOIN bulk_upload_file bu ON bu.id = ord.bulk_upload_file_id LEFT JOIN partner p ON p.id = ord.partner_id LEFT JOIN status s ON s.id = ord.status_id LEFT JOIN upload_batch ub ON ub.id = bu.upload_batch_id  LEFT JOIN program pr ON ord.program_id=pr.id  LEFT JOIN ( SELECT orm.order_id, GROUP_CONCAT(re.reasons) AS reasons FROM order_reasons_mapping orm LEFT JOIN reasons re ON re.id = orm.reason_id GROUP BY orm.order_id ) re ON re.order_id = ord.id  and ord.status_id  in (5,6)   ",
+      "countQuery": "SELECT count(*) FROM `order` ord left join bulk_upload_file bu on bu.id=ord.bulk_upload_file_id  LEFT JOIN program pr ON ord.program_id=pr.id  left join partner p on p.id=ord.partner_id  left join status s on s.id=ord.status_id left join upload_batch ub on ub.id=bu.upload_batch_id   ",
+      "orderBy": "ord.id desc",
+      "allowedParams": {
+        "statusIn": "ord.status_id",
+        "programIn":"ord.program_id",
+        "enDtLsEq": "ord.order_date",
+        "stDtGrEq": "ord.order_date",
+        "userid": "bu.user_id",
+        "partnerIn": "ord.partner_id",
+        "batchIn": "bu.upload_batch_id ",
+        "monthIn": "ub.month"
+      },
+      "postProcessor": "ordersPostProcessor"
+    },
+    "suportRoleBasedQueries": true
+
+  }
+}

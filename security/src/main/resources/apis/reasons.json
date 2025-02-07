@@ -1,0 +1,16 @@
+{
+  "select": {
+    "byReasonlike": {
+      "query": "select id,reasons from reasons where type='ORDER' and name=:reasonLike ",
+      "mandatoryFields": [
+        "reasonLike"
+      ]
+    },
+    "byId": {
+      "query": " SELECT re.reasons AS reasons from reasons re\n left join order_reasons_mapping orm on orm.reason_id=re.id\n left join `order` o on o.id=orm.order_id where o.id=:id ",
+      "mandatoryFields": [
+        "id"
+      ]
+    }
+  }
+}

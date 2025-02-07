@@ -1,0 +1,115 @@
+pipeline{
+    agent any
+    environment {
+   NAME = "admin-api"
+   VERSION = "${env.BUILD_ID}-${env.GIT_COMMIT}"
+   IMAGE = "${NAME}:${VERSION}"
+}
+
+    tools{
+        git 'gitRepo'
+        maven 'Maven-3.9.6'
+        gradle 'gradle-8.5' 
+        jdk 'Java-21'
+    }
+    
+    stages{
+            stage('Checkout') {
+        steps {
+            git branch:'${branch}',credentialsId:'shekar-hash', url: 'https://gitlab-hc.hashconnect.in/buyalenovo/omo-cb/admin-api.git'
+        }
+    }
+
+   stage("Build Deps") {
+    steps {
+        parallel (
+
+                      "firstTask" : {
+              build job: 'OMO-REPOSITORY', parameters: [ string(name:'branch',value:'release/04092024')]
+            },
+            "secondTask" : {
+                 build job: 'HC-PLATFORM'
+            }
+
+
+        )
+    }
+}
+
+
+  stage('Init'){
+   steps{
+     sh '''#!/bin/bash
+    '''
+    //readFileStep();
+    println "Init success..";
+    }
+   }
+     
+  stage('Build'){
+   steps{
+    
+    echo "Starting build ...."
+    sh '''#!/bin/bash
+     gradle clean build -x test
+     '''
+    println "BUILD NUMBER = $BUILD_NUMBER"
+    println "Build Success.."
+   }
+     }
+     
+  /*      stage('SonarQube analysis') {
+            steps {          
+                withCredentials([string(credentialsId: 'sonar_user', variable: 'PASSWORD')]) {
+                    withSonarQubeEnv('SonarQube') {               
+                        sh '''gradle jacocoTestReport'''
+                        sh '''/var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner  -Dsonar.projectBaseDir=${PWD} '''
+                    }           
+                }
+            }
+        }
+
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    withSonarQubeEnv('SonarQube') {   
+                        // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                        // true = set pipeline to UNSTABLE, false = don't
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+            }
+        }
+*/
+             
+     stage('Copying image to gitlab') {
+steps{
+ sh '''
+ docker build -t ${registry}/buyalenovo/omo-cb/${NAME}:${BUILD_NUMBER} .
+ docker push ${registry}/buyalenovo/omo-cb/${NAME}:${BUILD_NUMBER}
+'''        
+ }
+}
+
+           stage('Checkout Helm Chart') {
+        steps {
+         
+    git branch: 'main',credentialsId:'shekar-hash', url: 'https://gitlab-hc.hashconnect.in/buyalenovo/omo-cb/helmcharts/admin-api.git'
+
+ withCredentials([
+            gitUsernamePassword(credentialsId: 'shekar-hash', gitToolName: 'Default') ]) {
+      sh ''' yq -yi '.adminApi.adminApi.image.tag = "'${BUILD_NUMBER}'"' values.yaml 
+  git config --global user.email "shekar.a@hashconnect.in"
+  git config --global user.name "shekar.a"
+  git push --set-upstream origin main
+
+       git add values.yaml
+       git commit -m 'Updated the values yaml | "'${NAME}'":"'${BUILD_NUMBER}'" '
+       git push '''
+ }
+        }
+        }
+
+}
+} 
+

@@ -1,0 +1,21 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default_SUPER_ADMIN": {
+      "query": "SELECT COUNT(DISTINCT ord.partner_id) partnerCount,COUNT(ord.id) orderCount, SUM(ord.claimed_amount) value FROM `order` ord left join bulk_upload_file bu on bu.id=ord.bulk_upload_file_id left join user u on u.id=bu.user_id ",
+      "allowedParams": {
+        "statusIn": "ord.status_id",
+        "programIn":"ord.program_id",
+        "enDtLsEq": "ord.order_date",
+        "stDtGrEq": "ord.order_date",
+        "userid": "bu.user_id",
+        "partnerIn": "ord.partner_id",
+        "batchIn": "bu.upload_batch_id "
+      }
+    },
+
+    "suportRoleBasedQueries": true
+
+
+  }
+}

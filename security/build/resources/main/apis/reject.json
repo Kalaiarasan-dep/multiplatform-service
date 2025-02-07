@@ -1,0 +1,11 @@
+{
+  "update": {
+    "query": "update `order` set status_id=(select id from status where name='Rejected' and type='ORDER') where id in (:ids) ",
+    "mandatoryFields": [
+      "ids",
+      "reasonIds",
+      "statusId"
+    ],
+    "postProcessor": "actionsPostProcessor"
+  }
+}

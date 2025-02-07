@@ -1,0 +1,62 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.0'
+	id 'io.spring.dependency-management' version '1.1.4'
+	id 'eclipse'
+	id "jacoco"
+    id "org.sonarqube" version "3.5.0.2730"
+
+}
+
+group = 'in.hashconnect.omo'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	maven { url = "https://repo.maven.apache.org/maven2"}
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+	mavenLocal()
+}
+
+ext {
+	set('springCloudVersion', "2023.0.0")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '3.2.2'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.1'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-feign', version: '1.4.7.RELEASE'
+
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version: '3.1.1'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation ('in.hashconnect:platform:0.0.1-SNAPSHOT') {
+		exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j2-impl'
+	}
+	
+	implementation 'in.hashconnect.omo:repositories:0.0.1-SNAPSHOT'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+jacocoTestReport {
+    reports {
+//        xml.enabled true
+        xml.destination file("build/reports/jacoco/test/jacoco.xml")
+    }
+}

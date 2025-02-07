@@ -1,0 +1,12 @@
+{
+  "select": {
+    "default": {
+      "query": "select tc.id,tds_certificate_name,tds_certificate_url,date_format(created_dt,'%d/%m/%Y') created_dt from tds_certificate tc left join partner_has_user phu on phu.partner_id=tc.partner_id where phu.user_id=:userid order by 1 desc ",
+      "mandatoryFields": ["userid"]
+    },
+    "bySearchlike": {
+      "query": "select tc.id,tds_certificate_name,tds_certificate_url,date_format(created_dt,'%d/%m/%Y') created_dt from tds_certificate tc left join partner_has_user phu on phu.partner_id=tc.partner_id where phu.user_id=:userid AND (:searchLike IS NULL OR (tds_certificate_name LIKE CONCAT('%', :searchLike, '%'))) ",
+      "mandatoryFields": ["userid","searchLike"]
+    }
+  }
+}

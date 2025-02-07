@@ -1,0 +1,11 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "select  id,name from city ",
+      "allowedParams": {
+        "stateIn": "state_id"
+      }
+    }
+  }
+}

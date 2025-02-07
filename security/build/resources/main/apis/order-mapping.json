@@ -1,0 +1,10 @@
+{
+  "update": {
+    "preProcessor": "reasonsPreProcessor",
+    "query": "update `order` set status_id=(select id from status where name='New' and type='ORDER'),partner_id=:partnerId,contract_id=:contractId,merchant_id=:merchantId where id in (:ids) ",
+    "mandatoryFields": [
+      "ids",
+      "partnerId"
+    ]
+  }
+}

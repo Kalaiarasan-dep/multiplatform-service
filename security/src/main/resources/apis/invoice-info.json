@@ -1,0 +1,12 @@
+{
+  "select": {
+
+    "byId": {
+      "query": "SELECT * FROM (\n    (SELECT \n        'Orders Approved' AS status,  \n        3 AS id, \n        DATE_FORMAT(oh.create_dt, '%d-%m-%Y') AS date, \n        TRUE AS complete \n    FROM \n        order_history oh \n    LEFT JOIN \n        `order` ord ON ord.order_id = oh.order_id \n    WHERE \n        oh.status_id = 3 \n        AND ord.invoice_request_id = :id \n    LIMIT 1)\n    \n    UNION ALL\n    \n    (SELECT \n        s.name AS status, \n        s.id,  \n        DATE_FORMAT(ir.create_dt, '%d-%m-%Y') AS date, \n        TRUE AS complete \n    FROM \n        status s \n    LEFT JOIN \n        invoice_request_history ir ON ir.status_id = s.id \n    WHERE \n        ir.create_dt = (\n            SELECT MAX(create_dt) \n            FROM invoice_request_history \n            WHERE partner_invoice_request_id = :id \n              AND status_id = s.id\n        )\n        AND type = 'INVOICE_REQUEST' \n        AND ir.partner_invoice_request_id = :id \n        AND s.name IN ('Invoice Requested', 'Invoice Submitted', 'Invoice Approved', 'Paid'))\n) AS combined_results\nORDER BY \n    CASE status \n        WHEN 'Orders Approved' THEN 0\n        WHEN 'Invoice Requested' THEN 1\n        WHEN 'Invoice Submitted' THEN 2\n        WHEN 'Invoice Approved' THEN 3\n        WHEN 'Paid' THEN 4\n        ELSE 5\n    END ",
+      "mandatoryFields": [
+        "id"
+      ],
+      "postProcessor": "invoiceInfoPostProcessor"
+    }
+  }
+}

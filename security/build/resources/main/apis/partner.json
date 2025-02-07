@@ -1,0 +1,9 @@
+
+{
+  "select": {
+    "useDefaultAlways": true,
+    "default": {
+      "query": "SELECT p.id, CONCAT(gst_number, '-', registered_business_name) AS registered_business_name FROM \n    partner p \nLEFT JOIN \n    partner_has_user phu ON phu.partner_id = p.id\nLEFT JOIN \n    user_performs_role upr ON upr.user_id = phu.user_id \nLEFT JOIN \n    user u ON u.id = phu.user_id    \n    group by p.id , u.id HAVING \n    (SUM(CASE WHEN upr.role_id = 2 THEN 1 ELSE 0 END) > 0) \n    OR \n    (COUNT(upr.user_id) = 0) "
+    }
+  }
+}

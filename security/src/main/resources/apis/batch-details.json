@@ -1,0 +1,10 @@
+{
+  "select": {
+    "byId": {
+      "query": "select program as Program, concat(\"Batch \",batch_number)as Batch,cin CIN, month as Month,estimate_no as \"Estimate No\" ,zoho_project_id as \"Zoho Project Id\",\ncost as Cost,  gst as GST,cost_inclusive_gst as \"Cost Inclusive Gst\" from upload_batch where id=:id ",
+      "mandatoryFields": [
+        "id"
+      ]
+    }
+  }
+}

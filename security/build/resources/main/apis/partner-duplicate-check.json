@@ -1,0 +1,11 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "select owner_email as email,if(is_registered,true,false ) as is_registered,s.name as status FROM  partner p LEFT JOIN   partner_has_user phu ON phu.partner_id = p.id LEFT JOIN user_performs_role upr ON upr.user_id = phu.user_id LEFT JOIN  user u ON u.id = phu.user_id left join status s on s.id=p.status_id where gst_number=:gstNo group by p.id , u.id HAVING  (SUM(CASE WHEN upr.role_id = 2 THEN 1 ELSE 0 END) > 0)  OR  (COUNT(upr.user_id) = 0)  limit 1",
+      "mandatoryFields": [
+        "gstNo"
+      ]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "update": {
+    "query": "update `order` set reason_id=:reasonid where id in (:ids) ",
+    "mandatoryFields": [
+      "ids",
+      "reasonid"
+    ]
+  }
+}

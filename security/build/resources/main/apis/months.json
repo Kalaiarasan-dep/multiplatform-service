@@ -1,0 +1,7 @@
+{
+  "select": {
+    "default": {
+      "query": "select distinct month as name from upload_batch"
+    }
+  }
+}

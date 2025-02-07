@@ -1,0 +1,10 @@
+{
+  "select": {
+    "useDefaultAlways" : true,
+    "default": {
+      "query": "SELECT id, name FROM status WHERE name IN ('New', 'Approved', 'OnHold', 'Rejected') and type='ORDER' "
+    }
+  }
+}
+
+
