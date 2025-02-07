@@ -103,3 +103,32 @@ public class GenericDaoImpl extends AbstractDao implements GenericDao {
 
 
 }
+
+
+
+@Repository
+public abstract class AbstractDao {
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	protected JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+}
+
+
+
+public interface GenericDao {
+
+	boolean validateUserByEmailOrMobile(String un, boolean mobile);
+
+	public String getUserId(String userName);
+
+	public Long addOtp(OtpEntry otpEntry);
+
+	public int getOtpByIntervalAndIp(String ip, Integer interval);
+
+	public Boolean validateOtp(String userId,String otp);
+
