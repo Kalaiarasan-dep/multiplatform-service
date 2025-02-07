@@ -1,0 +1,32 @@
+pipeline{
+    agent any
+    environment {
+        GITLAB_PACKAGE_URL = "https://gitlab-hc.hashconnect.in/api/v4/projects/9/packages/maven"
+        GITLAB_TOKEN = credentials('shekar-hash') // Use the ID of the GitLab token credential
+    }
+ 
+ 
+    tools{
+        git 'gitRepo'
+        maven 'Maven-3.9.6' 
+        jdk 'Java-17'
+    }
+    stages{
+            stage('Checkout') {
+        steps {
+            git branch: 'master',credentialsId:'shekar-hash', url: 'https://gitlab-hc.hashconnect.in/buyalenovo/common-dao.git'
+        }
+    }
+ 
+          stage('Publish to GitLab Package Registry') {
+            steps {
+                echo "Publishing artifact to GitLab package registry ..."
+                sh '''
+                mvn clean install  -Dtest.skip=true
+                mvn deploy -s settings.xml
+                '''
+                echo "Artifact published successfully!"
+            }
+        }
+    }
+}
